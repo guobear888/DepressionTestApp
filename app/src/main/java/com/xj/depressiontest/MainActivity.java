@@ -1,0 +1,24 @@
+package com.xj.depressiontest;
+
+import android.app.*;import android.os.*;import android.graphics.Color;import android.graphics.Typeface;import android.view.*;import android.widget.*;import java.text.*;import java.util.*;
+
+public class MainActivity extends Activity{
+ int[] scores=new int[50]; LinearLayout list; TextView totalView,resultView,adviceView; Button submit,reset;
+ String[] qs={
+"1. 过去两周，我经常感到情绪低落、难过或空虚。","2. 我对平时喜欢的事情明显失去兴趣。","3. 我觉得做任何事都提不起劲。","4. 我比平时更容易疲劳或精力不足。","5. 我入睡困难、睡不踏实或睡得过多。","6. 我的食欲明显下降或明显增加。","7. 我觉得自己很失败，或让自己/家人失望。","8. 我难以集中注意力，例如看手机、看电视或工作学习。","9. 我的动作或说话变慢，别人也可能看得出来。","10. 我坐立不安、烦躁，难以安静下来。","11. 我对未来感到悲观或没有希望。","12. 我经常自责，觉得问题都是自己的错。","13. 我觉得自己没有价值或不被需要。","14. 我变得不愿意和别人交流。","15. 我容易哭，或想哭但哭不出来。","16. 我对生活中的小事也感到压力很大。","17. 我常常觉得心里很沉重。","18. 我早晨醒来时心情特别差。","19. 我对工作、学习或家务的效率明显下降。","20. 我常常拖延，明知道该做却做不动。","21. 我觉得生活失去了意义感。","22. 我经常感到孤独，即使身边有人。","23. 我比以前更容易发脾气或敏感。","24. 我对批评或拒绝特别难受。","25. 我觉得自己无法从休息中恢复精力。","26. 我经常回避社交、电话或消息。","27. 我感觉脑子变慢，思考困难。","28. 我对自己的身体、外貌或能力特别不满意。","29. 我经常无缘无故感到内疚。","30. 我觉得没有人真正理解我。","31. 我常常担心自己会一直这样下去。","32. 我对计划、目标或未来安排失去动力。","33. 我觉得生活中快乐的时刻变少了。","34. 我经常觉得胸闷、胃口差、头痛或身体不舒服。","35. 我比平时更依赖刷短视频、游戏或躺着逃避。","36. 我对亲密关系或家庭互动兴趣下降。","37. 我觉得自己被困住，难以改变现状。","38. 我经常反复想过去的错误或遗憾。","39. 我做决定变得困难。","40. 我觉得别人过得都比我好。","41. 我觉得自己不配得到关心或帮助。","42. 我对金钱、工作或家庭问题感到无力。","43. 我经常把自己和别人比较后更难受。","44. 我觉得每天都像在硬撑。","45. 我经常想逃离当前生活。","46. 我觉得自己即使努力也没有用。","47. 我对重要事情也变得麻木。","48. 我经常觉得心里空空的。","49. 我有过“不如消失”的念头。","50. 我有过伤害自己或结束生命的想法。"};
+ @Override public void onCreate(Bundle b){super.onCreate(b); Arrays.fill(scores,-1); build();}
+ TextView tv(String s,int sp,int c,int style){TextView v=new TextView(this);v.setText(s);v.setTextSize(sp);v.setTextColor(c);v.setTypeface(Typeface.DEFAULT,style);v.setPadding(dp(14),dp(8),dp(14),dp(6));return v;}
+ void build(){ScrollView sv=new ScrollView(this); LinearLayout root=new LinearLayout(this);root.setOrientation(LinearLayout.VERTICAL);root.setBackgroundColor(Color.rgb(246,248,255));sv.addView(root);
+  TextView title=tv("抑郁情绪自测 50 题",24,Color.rgb(30,43,76),Typeface.BOLD); title.setGravity(Gravity.CENTER); root.addView(title);
+  TextView note=tv("说明：本工具只用于情绪筛查和自我观察，不等同于医学诊断。请按过去两周的真实感受选择：0没有，1偶尔，2经常，3几乎每天。若第49或50题选择2分以上，请尽快联系家人、医生或当地危机热线。",15,Color.rgb(80,86,105),Typeface.NORMAL); root.addView(note);
+  list=new LinearLayout(this);list.setOrientation(LinearLayout.VERTICAL);root.addView(list); for(int i=0;i<qs.length;i++) addQ(i);
+  submit=new Button(this);submit.setText("查看测试结果");submit.setTextSize(18);submit.setOnClickListener(v->calc());root.addView(submit,new LinearLayout.LayoutParams(-1,dp(56)));
+  reset=new Button(this);reset.setText("重新测试");reset.setOnClickListener(v->{Arrays.fill(scores,-1);build();});root.addView(reset,new LinearLayout.LayoutParams(-1,dp(50)));
+  totalView=tv("",20,Color.rgb(20,50,120),Typeface.BOLD);root.addView(totalView);resultView=tv("",22,Color.rgb(180,50,50),Typeface.BOLD);root.addView(resultView);adviceView=tv("",16,Color.rgb(55,62,80),Typeface.NORMAL);root.addView(adviceView);
+  TextView foot=tv("紧急提示：若你正在考虑伤害自己，请立即联系当地急救电话或心理危机热线；在美国可拨打或短信 988。",14,Color.rgb(160,45,45),Typeface.BOLD);root.addView(foot); setContentView(sv);}
+ void addQ(int idx){LinearLayout card=new LinearLayout(this);card.setOrientation(LinearLayout.VERTICAL);card.setPadding(dp(10),dp(10),dp(10),dp(10));card.setBackgroundColor(Color.WHITE);LinearLayout.LayoutParams cp=new LinearLayout.LayoutParams(-1,-2);cp.setMargins(dp(10),dp(6),dp(10),dp(6));list.addView(card,cp);card.addView(tv(qs[idx],16,Color.rgb(30,35,50),Typeface.BOLD));RadioGroup rg=new RadioGroup(this);rg.setOrientation(RadioGroup.VERTICAL);String[] opts={"0 没有","1 偶尔/几天","2 经常/超过一半天数","3 几乎每天"};for(int s=0;s<4;s++){RadioButton rb=new RadioButton(this);rb.setText(opts[s]);rb.setTextSize(15);rb.setId(1000+idx*10+s);rg.addView(rb);} rg.setOnCheckedChangeListener((g,id)->scores[idx]=(id-1000-idx*10));card.addView(rg);} 
+ void calc(){int total=0;for(int i=0;i<50;i++){if(scores[i]<0){Toast.makeText(this,"第"+(i+1)+"题还没有选择",Toast.LENGTH_SHORT).show();return;}total+=scores[i];}
+  String level,ad; if(total<=29){level="一级：基本正常/轻微波动";ad="建议保持规律睡眠、运动和社交，1-2周后可复测。";}else if(total<=59){level="二级：轻度抑郁风险";ad="建议减少熬夜和压力源，增加户外活动；若持续两周以上，可咨询心理咨询师。";}else if(total<=89){level="三级：中度抑郁风险";ad="建议尽快与可信任的人沟通，并预约心理咨询或精神科/心理科评估。";}else if(total<=119){level="四级：较重抑郁风险";ad="建议尽快就医评估，不要独自硬扛；可让家人朋友陪同处理工作、睡眠和安全问题。";}else{level="五级：重度抑郁风险";ad="建议立即联系专业医生或危机支持。如果有自伤/轻生想法，请立刻拨打当地急救电话或危机热线，美国可拨打/短信988。";}
+  if(scores[48]>=2||scores[49]>=2) ad="【安全优先】你在自伤/消失相关题目得分较高，请立即联系家人朋友陪伴，并尽快联系专业医生或危机热线。美国可拨打或短信988。\n\n"+ad;
+  totalView.setText("总分："+total+" / 150    测试时间："+new SimpleDateFormat("yyyy-MM-dd HH:mm",Locale.getDefault()).format(new Date()));resultView.setText(level);adviceView.setText(ad);}
+ int dp(int v){return (int)(v*getResources().getDisplayMetrics().density+0.5f);} }
